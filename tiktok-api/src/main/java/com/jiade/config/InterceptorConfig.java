@@ -1,9 +1,12 @@
 package com.jiade.config;
 
+import com.jiade.interceptor.CorsInterceptor;
 import com.jiade.interceptor.PassportInterceptor;
 import com.jiade.interceptor.UserTokenInterceptor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -14,23 +17,27 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  **/
 @Configuration
 public class InterceptorConfig implements WebMvcConfigurer {
-     @Bean
-    public PassportInterceptor passportInterceptor() {
-        return new PassportInterceptor();
-    }
+    @Autowired
+    private PassportInterceptor passportInterceptor;
 
-    @Bean
-    public UserTokenInterceptor userTokenInterceptor() {
-        return new UserTokenInterceptor();
-    }
+    @Autowired
+    private UserTokenInterceptor userTokenInterceptor;
+
+    @Autowired
+    private CorsInterceptor corsInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(passportInterceptor())
+        registry.addInterceptor(corsInterceptor)
+                .addPathPatterns("/**");
+
+        registry.addInterceptor(passportInterceptor)
                 .addPathPatterns("/passport/getSMSCode");
 
-        registry.addInterceptor(userTokenInterceptor())
+        registry.addInterceptor(userTokenInterceptor)
                 .addPathPatterns("/userInfo/modifyUserInfo")
                 .addPathPatterns("/userInfo/modifyImage");
     }
+
+
 }

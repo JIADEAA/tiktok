@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @Data
 public class MinIOConfig {
-       @Value("${minio.endpoint}")
+    @Value("${minio.endpoint}")
     private String endpoint;
     @Value("${minio.fileHost}")
     private String fileHost;

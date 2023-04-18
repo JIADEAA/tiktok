@@ -46,7 +46,7 @@ public class VlogServiceImpl extends BaseInfoProperties implements VlogService {
     @Autowired
     private MsgService msgService;
 
-    @Resource
+    @Autowired
     private Sid sid;
 
     @Transactional

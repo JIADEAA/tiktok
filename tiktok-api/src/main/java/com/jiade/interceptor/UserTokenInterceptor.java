@@ -5,6 +5,7 @@ import com.jiade.exceptions.GraceException;
 import com.jiade.result.ResponseStatusEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -17,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
  * @date: 2023/4/7 10:06
  **/
 @Slf4j
+@Component
 public class UserTokenInterceptor extends BaseInfoProperties implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request,
@@ -26,10 +28,12 @@ public class UserTokenInterceptor extends BaseInfoProperties implements HandlerI
         // 从header中获得用户id和token
         String userId = request.getHeader("headerUserId");
         String userToken = request.getHeader("headerUserToken");
-
+            log.info(userId);
+            log.info(userToken);
         // 判断header中用户id和token不能为空
         if (StringUtils.isNotBlank(userId) && StringUtils.isNotBlank(userToken)) {
             String redisToken = redis.get(REDIS_USER_TOKEN + ":" + userId);
+
             if (StringUtils.isBlank(redisToken)) {
                 GraceException.display(ResponseStatusEnum.UN_LOGIN);
                 return false;

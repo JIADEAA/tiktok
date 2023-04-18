@@ -5,6 +5,7 @@ import com.jiade.exceptions.GraceException;
 import com.jiade.result.ResponseStatusEnum;
 import com.jiade.utils.IPUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -17,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
  * @date: 2023/4/6 16:40
  **/
 @Slf4j
+@Component
 public class PassportInterceptor extends BaseInfoProperties implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {

@@ -1,11 +1,15 @@
 package com.jiade.utils;
 
-import com.aliyun.auth.credentials.Credential;
-import com.aliyun.auth.credentials.provider.StaticCredentialProvider;
-import com.aliyun.sdk.service.dysmsapi20170525.models.*;
-import com.aliyun.sdk.service.dysmsapi20170525.*;
+
+import com.aliyuncs.DefaultAcsClient;
+import com.aliyuncs.IAcsClient;
+import com.aliyuncs.dysmsapi.model.v20170525.SendSmsRequest;
+import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
+import com.aliyuncs.exceptions.ClientException;
+import com.aliyuncs.exceptions.ServerException;
+import com.aliyuncs.profile.DefaultProfile;
 import com.google.gson.Gson;
-import darabonba.core.client.ClientOverrideConfiguration;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,68 +27,39 @@ public class SendSMS {
     @Autowired
     private AliyunProperties aliyunProperties;
 
-    public void sendSMS(String phone) throws Exception {
-        // HttpClient Configuration
-        /*HttpClient httpClient = new ApacheAsyncHttpClientBuilder()
-                .connectionTimeout(Duration.ofSeconds(10)) // Set the connection timeout time, the default is 10 seconds
-                .responseTimeout(Duration.ofSeconds(10)) // Set the response timeout time, the default is 20 seconds
-                .maxConnections(128) // Set the connection pool size
-                .maxIdleTimeOut(Duration.ofSeconds(50)) // Set the connection pool timeout, the default is 30 seconds
-                // Configure the proxy
-                .proxy(new ProxyOptions(ProxyOptions.Type.HTTP, new InetSocketAddress("<your-proxy-hostname>", 9001))
-                        .setCredentials("<your-proxy-username>", "<your-proxy-password>"))
-                // If it is an https connection, you need to configure the certificate, or ignore the certificate(.ignoreSSL(true))
-                .x509TrustManagers(new X509TrustManager[]{})
-                .keyManagers(new KeyManager[]{})
-                .ignoreSSL(false)
-                .build(); */
+    public void sendSMS(String phone, String code) throws Exception {
 
-        // Configure Credentials authentication information, including ak, secret, token
-        StaticCredentialProvider provider = StaticCredentialProvider.create(Credential.builder()
-                .accessKeyId(aliyunProperties.getSecretId())
-                .accessKeySecret(aliyunProperties.getSecretKey())
-                //.securityToken("<your-token>") // use STS token
-                .build());
+        DefaultProfile profile = DefaultProfile.getProfile("cn-hangzhou", aliyunProperties.getSecretId(), aliyunProperties.getSecretKey());
+        /** use STS Token
+        DefaultProfile profile = DefaultProfile.getProfile(
+            "<your-region-id>",           // The region ID
+            "<your-access-key-id>",       // The AccessKey ID of the RAM account
+            "<your-access-key-secret>",   // The AccessKey Secret of the RAM account
+            "<your-sts-token>");          // STS Token
+        **/
 
-        // Configure the Client
-        AsyncClient client = AsyncClient.builder()
-                .region("cn-hangzhou") // Region ID
-                //.httpClient(httpClient) // Use the configured HttpClient, otherwise use the default HttpClient (Apache HttpClient)
-                .credentialsProvider(provider)
-                //.serviceConfiguration(Configuration.create()) // Service-level configuration
-                // Client-level configuration rewrite, can set Endpoint, Http request parameters, etc.
-                .overrideConfiguration(
-                        ClientOverrideConfiguration.create()
-                                .setEndpointOverride("dysmsapi.aliyuncs.com")
-                        //.setConnectTimeout(Duration.ofSeconds(30))
-                )
-                .build();
+        IAcsClient client = new DefaultAcsClient(profile);
 
-        // Parameter settings for API request
-        SendSmsRequest sendSmsRequest = SendSmsRequest.builder()
-                .signName("仿tiktok")
-                .phoneNumbers(phone)
-                .templateCode("")
-                // Request-level configuration rewrite, can set Http request parameters, etc.
-                // .requestConfiguration(RequestConfiguration.create().setHttpHeaders(new HttpHeaders()))
-                .build();
 
-        // Asynchronously get the return value of the API request
-        CompletableFuture<SendSmsResponse> response = client.sendSms(sendSmsRequest);
-        // Synchronously get the return value of the API request
-        SendSmsResponse resp = response.get();
-        System.out.println(new Gson().toJson(resp));
-        // Asynchronous processing of return values
-        /*response.thenAccept(resp -> {
-            System.out.println(new Gson().toJson(resp));
-        }).exceptionally(throwable -> { // Handling exceptions
-            System.out.println(throwable.getMessage());
-            return null;
-        });*/
+        SendSmsRequest request = new SendSmsRequest();
+        request.setSignName("仿tiktok");
+        request.setTemplateCode("SMS_276065009");
+        request.setPhoneNumbers("15089921298");
+        request.setTemplateParam("{\"code\":\""+code+"\"}");
 
-        // Finally, close the client
-        client.close();
+        try {
+            SendSmsResponse response = client.getAcsResponse(request);
+            System.out.println(new Gson().toJson(response));
+        } catch (ServerException e) {
+            e.printStackTrace();
+        } catch (ClientException e) {
+            System.out.println("ErrCode:" + e.getErrCode());
+            System.out.println("ErrMsg:" + e.getErrMsg());
+            System.out.println("RequestId:" + e.getRequestId());
+        }
+
     }
+
 
 }
 

@@ -40,7 +40,7 @@ public class CommentServiceImpl extends BaseInfoProperties implements CommentSer
     @Autowired
     private MsgService msgService;
 
-    @Resource
+    @Autowired
     private Sid sid;
 
     @Override

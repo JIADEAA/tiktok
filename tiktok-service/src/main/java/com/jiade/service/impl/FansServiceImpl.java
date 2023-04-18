@@ -35,7 +35,7 @@ public class FansServiceImpl extends BaseInfoProperties implements FansService {
     @Autowired
     private MsgService msgService;
 
-    @Resource
+    @Autowired
     private Sid sid;
 
     @Transactional
