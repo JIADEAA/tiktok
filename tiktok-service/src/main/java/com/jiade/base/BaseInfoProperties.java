@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.jiade.utils.PagedGridResult;
 import com.jiade.utils.RedisOperator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
@@ -38,13 +39,21 @@ public class BaseInfoProperties {
     public static final String REDIS_MY_FANS_COUNTS = "redis_my_fans_counts";
     // 博主和粉丝的关联关系，用于判断他们是否互粉
     public static final String REDIS_FANS_AND_VLOGGER_RELATIONSHIP = "redis_fans_and_vlogger_relationship";
+    // 博主的粉丝列表
+    public static final String FANS = "redis_my_fans";
+    // 博主的关注列表
+    public static final String FOLLOWS = "redis_my_follows";
 
-    // 视频和发布者获赞数
-    public static final String REDIS_VLOG_BE_LIKED_COUNTS = "redis_vlog_be_liked_counts";
+
     public static final String REDIS_VLOGER_BE_LIKED_COUNTS = "redis_vloger_be_liked_counts";
 
+    // 视频和发布者获赞数
+    public static final String VLOG_BE_LIKED_COUNTS = "vlog_be_liked_counts";
+    public static final String VLOG_BE_LIKED = "vlog_be_liked";
+    public static final String VLOGGER_BE_LIKED_COUNTS = "vlogger_be_liked_counts";
+
     // 用户是否喜欢/点赞视频，取代数据库的关联关系，1：喜欢，0：不喜欢（默认） redis_user_like_vlog:{userId}:{vlogId}
-    public static final String REDIS_USER_LIKE_VLOG = "redis_user_like_vlog";
+    public static final String USER_LIKE_VLOG = "user_like_vlog";
 
 
 //    public Map<String, String> getErrors(BindingResult result) {

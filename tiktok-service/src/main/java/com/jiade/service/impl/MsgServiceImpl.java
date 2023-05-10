@@ -60,13 +60,13 @@ public class MsgServiceImpl extends BaseInfoProperties implements MsgService {
                                      Integer pageSize) {
 
         Pageable pageable = PageRequest.of(page,
-                                            pageSize,
-                                            Sort.Direction.DESC,
-                                            "createTime");
+                pageSize,
+                Sort.Direction.DESC,
+                "createTime");
 
-        List<MessageMO> list =  messageRepository
-                        .findAllByToUserIdEqualsOrderByCreateTimeDesc(toUserId,
-                                                                pageable);
+        List<MessageMO> list = messageRepository
+                .findAllByToUserIdEqualsOrderByCreateTimeDesc(toUserId,
+                        pageable);
         for (MessageMO msg : list) {
             // 如果类型是关注消息，则需要查询我之前有没有关注过他，用于在前端标记“互粉”“互关”
             if (msg.getMsgType() != null && msg.getMsgType() == MessageEnum.FOLLOW_YOU.type) {
@@ -75,14 +75,20 @@ public class MsgServiceImpl extends BaseInfoProperties implements MsgService {
                     map = new HashMap();
                 }
 
-                String relationship = redis.get(REDIS_FANS_AND_VLOGGER_RELATIONSHIP + ":" + msg.getToUserId() + ":" + msg.getFromUserId());
-                if (StringUtils.isNotBlank(relationship) && relationship.equalsIgnoreCase("1")) {
-                    map.put("isFriend", true);
-                } else {
+//                String relationship = redis.get(REDIS_FANS_AND_VLOGGER_RELATIONSHIP + ":" + msg.getToUserId() + ":" + msg.getFromUserId());
+//                if (StringUtils.isNotBlank(relationship) && relationship.equalsIgnoreCase("1")) {
+//                    map.put("isFriend", true);
+//                } else {
+//                    map.put("isFriend", false);
+//                }
+                Long ifFriend = redis.zRank(FOLLOWS + ":" + msg.getToUserId(), msg.getFromUserId());
+                if (ifFriend == null) {
                     map.put("isFriend", false);
-                }
+                } else map.put("isFriend", true);
+
+
                 msg.setMsgContent(map);
-             }
+            }
         }
         return list;
     }

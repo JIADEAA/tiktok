@@ -115,7 +115,7 @@ public class UserServiceImpl implements UserService {
                 GraceException.display(ResponseStatusEnum.USER_INFO_UPDATED_NICKNAME_EXIST_ERROR);
             }
 
-            Users tempUser =  getUser(updatedUserBO.getId());
+            Users tempUser = getUser(updatedUserBO.getId());
             if (tempUser.getCanImoocNumBeUpdated() == YesOrNo.NO.type) {
                 GraceException.display(ResponseStatusEnum.USER_INFO_CANT_UPDATED_IMOOCNUM_ERROR);
             }

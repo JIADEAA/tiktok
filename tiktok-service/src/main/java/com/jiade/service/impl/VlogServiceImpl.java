@@ -129,20 +129,19 @@ public class VlogServiceImpl extends BaseInfoProperties implements VlogService {
 
     @Override
     public Integer getVlogBeLikedCounts(String vlogId) {
-        String countsStr = redis.get(REDIS_VLOG_BE_LIKED_COUNTS + ":" + vlogId);
-        if (StringUtils.isBlank(countsStr)) {
-            countsStr = "0";
+
+
+        Long count = redis.sCard(VLOG_BE_LIKED + ":" + vlogId);
+        if (count == null) {
+            return Integer.valueOf("0");
         }
-        return Integer.valueOf(countsStr);
+        return Integer.valueOf(count.toString());
     }
 
     private boolean doILikeVlog(String myId, String vlogId) {
 
-        String doILike = redis.get(REDIS_USER_LIKE_VLOG + ":" + myId + ":" + vlogId);
-        boolean isLike = false;
-        if (StringUtils.isNotBlank(doILike) && doILike.equalsIgnoreCase("1")) {
-            isLike = true;
-        }
+        Boolean isLike = redis.sIsMembers(USER_LIKE_VLOG + ":" + myId, vlogId);
+
         return isLike;
     }
 
@@ -219,13 +218,12 @@ public class VlogServiceImpl extends BaseInfoProperties implements VlogService {
         msg.put("type", MessageEnum.LIKE_VLOG.type);
 
 
-
 //        msgService.createMsg(userId,
 //                            vlog.getVlogerId(),
 //                            MessageEnum.LIKE_VLOG.type,
 //                            msgContent);
         log.info("创建消息msg_like");
-        rabbitTemplate.convertAndSend("exchange_msg","msg_like",msg);
+        rabbitTemplate.convertAndSend("exchange_msg", "msg_like", msg);
 
     }
 

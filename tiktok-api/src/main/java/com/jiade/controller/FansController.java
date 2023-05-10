@@ -48,12 +48,17 @@ public class FansController extends BaseInfoProperties {
         // 保存粉丝关系到数据库
         fansService.doFollow(myId, vlogerId);
 
-        // 博主的粉丝+1，我的关注+1
-        redis.increment(REDIS_MY_FOLLOWS_COUNTS + ":" + myId, 1);
-        redis.increment(REDIS_MY_FANS_COUNTS + ":" + vlogerId, 1);
+        /**
+         *原本采用String维护粉丝关注现在采用ZSET，加入关注时间
+         // 博主的粉丝+1，我的关注+1
+         redis.increment(REDIS_MY_FOLLOWS_COUNTS + ":" + myId, 1);
+         redis.increment(REDIS_MY_FANS_COUNTS + ":" + vlogerId, 1);
 
-        // 我和博主的关联关系，依赖redis，不要存储数据库，避免db的性能瓶颈
-        redis.set(REDIS_FANS_AND_VLOGGER_RELATIONSHIP + ":" + myId + ":" + vlogerId, "1");
+         // 我和博主的关联关系，依赖redis，不要存储数据库，避免db的性能瓶颈
+         redis.set(REDIS_FANS_AND_VLOGGER_RELATIONSHIP + ":" + myId + ":" + vlogerId, "1");
+         */
+        redis.zAdd(FOLLOWS + ":" + myId, vlogerId);
+        redis.zAdd(FANS + ":" + vlogerId, myId);
 
         return GraceJSONResult.ok();
     }
@@ -64,13 +69,17 @@ public class FansController extends BaseInfoProperties {
 
         // 删除业务的执行
         fansService.doCancel(myId, vlogerId);
+        /**
+         *原本采用String维护粉丝关注现在采用ZSET，加入关注时间
+         // 博主的粉丝-1，我的关注-1
+         redis.decrement(REDIS_MY_FOLLOWS_COUNTS + ":" + myId, 1);
+         redis.decrement(REDIS_MY_FANS_COUNTS + ":" + vlogerId, 1);
 
-        // 博主的粉丝-1，我的关注-1
-        redis.decrement(REDIS_MY_FOLLOWS_COUNTS + ":" + myId, 1);
-        redis.decrement(REDIS_MY_FANS_COUNTS + ":" + vlogerId, 1);
-
-        // 我和博主的关联关系，依赖redis，不要存储数据库，避免db的性能瓶颈
-        redis.del(REDIS_FANS_AND_VLOGGER_RELATIONSHIP + ":" + myId + ":" + vlogerId);
+         // 我和博主的关联关系，依赖redis，不要存储数据库，避免db的性能瓶颈
+         redis.del(REDIS_FANS_AND_VLOGGER_RELATIONSHIP + ":" + myId + ":" + vlogerId);
+         */
+        redis.zRemove(FOLLOWS + ":" + myId, vlogerId);
+        redis.zRemove(FANS + ":" + vlogerId, myId);
 
         return GraceJSONResult.ok();
     }
@@ -94,8 +103,8 @@ public class FansController extends BaseInfoProperties {
 
     @GetMapping("queryMyFans")
     public GraceJSONResult queryMyFans(@RequestParam String myId,
-                                          @RequestParam Integer page,
-                                          @RequestParam Integer pageSize) {
+                                       @RequestParam Integer page,
+                                       @RequestParam Integer pageSize) {
         return GraceJSONResult.ok(
                 fansService.queryMyFans(
                         myId,

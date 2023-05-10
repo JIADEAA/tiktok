@@ -68,11 +68,11 @@ public class CommentController extends BaseInfoProperties {
 
     @DeleteMapping("delete")
     public GraceJSONResult delete(@RequestParam String commentUserId,
-                                @RequestParam String commentId,
-                                @RequestParam String vlogId) {
+                                  @RequestParam String commentId,
+                                  @RequestParam String vlogId) {
         commentService.deleteComment(commentUserId,
-                                    commentId,
-                                    vlogId);
+                commentId,
+                vlogId);
         return GraceJSONResult.ok();
     }
 
@@ -80,7 +80,7 @@ public class CommentController extends BaseInfoProperties {
     public GraceJSONResult like(@RequestParam String commentId,
                                 @RequestParam String userId) {
 
-        // 故意犯错，bigkey
+
         redis.incrementHash(REDIS_VLOG_COMMENT_LIKED_COUNTS, commentId, 1);
         redis.setHashValue(REDIS_USER_LIKE_COMMENT, userId + ":" + commentId, "1");
 //        redis.hset(REDIS_USER_LIKE_COMMENT, userId, "1");
@@ -94,9 +94,9 @@ public class CommentController extends BaseInfoProperties {
         msgContent.put("vlogCover", vlog.getCover());
         msgContent.put("commentId", commentId);
         msgService.createMsg(userId,
-                            comment.getCommentUserId(),
-                            MessageEnum.LIKE_COMMENT.type,
-                            msgContent);
+                comment.getCommentUserId(),
+                MessageEnum.LIKE_COMMENT.type,
+                msgContent);
 
 
         return GraceJSONResult.ok();
@@ -104,7 +104,7 @@ public class CommentController extends BaseInfoProperties {
 
     @PostMapping("unlike")
     public GraceJSONResult unlike(@RequestParam String commentId,
-                                @RequestParam String userId) {
+                                  @RequestParam String userId) {
 
         redis.decrementHash(REDIS_VLOG_COMMENT_LIKED_COUNTS, commentId, 1);
         redis.hdel(REDIS_USER_LIKE_COMMENT, userId + ":" + commentId);

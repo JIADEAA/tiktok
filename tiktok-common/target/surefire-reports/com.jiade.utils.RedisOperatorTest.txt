@@ -1,0 +1,20 @@
+-------------------------------------------------------------------------------
+Test set: com.jiade.utils.RedisOperatorTest
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.043 s <<< FAILURE! - in com.jiade.utils.RedisOperatorTest
+initializationError(com.jiade.utils.RedisOperatorTest)  Time elapsed: 0.004 s  <<< ERROR!
+org.junit.runners.model.InvalidTestClassError: 
+Invalid test class 'com.jiade.utils.RedisOperatorTest':
+  1. The class com.jiade.utils.RedisOperatorTest is not public.
+  2. Test class should have exactly one public constructor
+  3. Method zRevRange() should be public
+  4. Method zRemove() should be public
+  5. Method sAdd() should be public
+  6. Method zAdd() should be public
+  7. Method sCard() should be public
+  8. Method zCard() should be public
+  9. Method zRank() should be public
+  10. Method sMembers() should be public
+  11. Method sIsMembers() should be public
+  12. Method sRemove() should be public
+

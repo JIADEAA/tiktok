@@ -54,14 +54,14 @@ public class VlogController extends BaseInfoProperties {
     public GraceJSONResult changeToPrivate(@RequestParam String userId,
                                            @RequestParam String vlogId) {
         vlogService.changeToPrivateOrPublic(userId,
-                                            vlogId,
-                                            YesOrNo.YES.type);
+                vlogId,
+                YesOrNo.YES.type);
         return GraceJSONResult.ok();
     }
 
     @PostMapping("changeToPublic")
     public GraceJSONResult changeToPublic(@RequestParam String userId,
-                                           @RequestParam String vlogId) {
+                                          @RequestParam String vlogId) {
         vlogService.changeToPrivateOrPublic(userId,
                 vlogId,
                 YesOrNo.NO.type);
@@ -69,11 +69,10 @@ public class VlogController extends BaseInfoProperties {
     }
 
 
-
     @GetMapping("myPublicList")
     public GraceJSONResult myPublicList(@RequestParam String userId,
-                                     @RequestParam Integer page,
-                                     @RequestParam Integer pageSize) {
+                                        @RequestParam Integer page,
+                                        @RequestParam Integer pageSize) {
 
         if (page == null) {
             page = COMMON_START_PAGE;
@@ -83,16 +82,16 @@ public class VlogController extends BaseInfoProperties {
         }
 
         PagedGridResult gridResult = vlogService.queryMyVlogList(userId,
-                                                                page,
-                                                                pageSize,
-                                                                YesOrNo.NO.type);
+                page,
+                pageSize,
+                YesOrNo.NO.type);
         return GraceJSONResult.ok(gridResult);
     }
 
     @GetMapping("myPrivateList")
     public GraceJSONResult myPrivateList(@RequestParam String userId,
-                                        @RequestParam Integer page,
-                                        @RequestParam Integer pageSize) {
+                                         @RequestParam Integer page,
+                                         @RequestParam Integer pageSize) {
 
         if (page == null) {
             page = COMMON_START_PAGE;
@@ -110,8 +109,8 @@ public class VlogController extends BaseInfoProperties {
 
     @GetMapping("myLikedList")
     public GraceJSONResult myLikedList(@RequestParam String userId,
-                                         @RequestParam Integer page,
-                                         @RequestParam Integer pageSize) {
+                                       @RequestParam Integer page,
+                                       @RequestParam Integer pageSize) {
 
         if (page == null) {
             page = COMMON_START_PAGE;
@@ -121,26 +120,36 @@ public class VlogController extends BaseInfoProperties {
         }
 
         PagedGridResult gridResult = vlogService.getMyLikedVlogList(userId,
-                                                                    page,
-                                                                    pageSize);
+                page,
+                pageSize);
         return GraceJSONResult.ok(gridResult);
     }
 
 
     @PostMapping("like")
     public GraceJSONResult like(@RequestParam String userId,
-                                 @RequestParam String vlogerId,
-                                 @RequestParam String vlogId) {
+                                @RequestParam String vlogerId,
+                                @RequestParam String vlogId) {
 
         // 我点赞的视频，关联关系保存到数据库
         vlogService.userLikeVlog(userId, vlogId);
 
-        // 点赞后，视频和视频发布者的获赞都会 +1
-        redis.increment(REDIS_VLOGER_BE_LIKED_COUNTS + ":" + vlogerId, 1);
-        redis.increment(REDIS_VLOG_BE_LIKED_COUNTS + ":" + vlogId, 1);
+        /**
+         *
+         // 点赞后，视频和视频发布者的获赞都会 +1
+         redis.increment(REDIS_VLOGER_BE_LIKED_COUNTS + ":" + vlogerId, 1);
+         redis.increment(REDIS_VLOG_BE_LIKED_COUNTS + ":" + vlogId, 1);
 
-        // 我点赞的视频，需要在redis中保存关联关系
-        redis.set(REDIS_USER_LIKE_VLOG + ":" + userId + ":" + vlogId, "1");
+         // 我点赞的视频，需要在redis中保存关联关系
+         redis.set(REDIS_USER_LIKE_VLOG + ":" + userId + ":" + vlogId, "1");
+         */
+
+
+        // 点赞后，谁点赞了视频视频
+        redis.sAdd(VLOG_BE_LIKED + ":" + vlogId, userId);
+        redis.increment(VLOGGER_BE_LIKED_COUNTS + ":" + vlogerId, 1);
+        // 我点赞的视频
+        redis.sAdd(USER_LIKE_VLOG + ":" + userId, vlogId);
 
         return GraceJSONResult.ok();
     }
@@ -148,15 +157,20 @@ public class VlogController extends BaseInfoProperties {
 
     @PostMapping("unlike")
     public GraceJSONResult unlike(@RequestParam String userId,
-                                @RequestParam String vlogerId,
-                                @RequestParam String vlogId) {
+                                  @RequestParam String vlogerId,
+                                  @RequestParam String vlogId) {
 
         // 我取消点赞的视频，关联关系删除
         vlogService.userUnLikeVlog(userId, vlogId);
 
-        redis.decrement(REDIS_VLOGER_BE_LIKED_COUNTS + ":" + vlogerId, 1);
-        redis.decrement(REDIS_VLOG_BE_LIKED_COUNTS + ":" + vlogId, 1);
-        redis.del(REDIS_USER_LIKE_VLOG + ":" + userId + ":" + vlogId);
+//        redis.decrement(REDIS_VLOGER_BE_LIKED_COUNTS + ":" + vlogerId, 1);
+//        redis.decrement(REDIS_VLOG_BE_LIKED_COUNTS + ":" + vlogId, 1);
+//        redis.del(USER_LIKE_VLOG + ":" + userId + ":" + vlogId);
+
+
+        redis.sRemove(VLOG_BE_LIKED + ":" + vlogId, userId);
+        redis.decrement(VLOGGER_BE_LIKED_COUNTS + ":" + vlogerId, 1);
+        redis.sRemove(USER_LIKE_VLOG + ":" + userId, vlogId);
 
         return GraceJSONResult.ok();
     }
@@ -168,8 +182,8 @@ public class VlogController extends BaseInfoProperties {
 
     @GetMapping("followList")
     public GraceJSONResult followList(@RequestParam String myId,
-                                       @RequestParam Integer page,
-                                       @RequestParam Integer pageSize) {
+                                      @RequestParam Integer page,
+                                      @RequestParam Integer pageSize) {
 
         if (page == null) {
             page = COMMON_START_PAGE;
@@ -179,8 +193,8 @@ public class VlogController extends BaseInfoProperties {
         }
 
         PagedGridResult gridResult = vlogService.getMyFollowVlogList(myId,
-                                                                    page,
-                                                                    pageSize);
+                page,
+                pageSize);
         return GraceJSONResult.ok(gridResult);
     }
 
@@ -197,8 +211,8 @@ public class VlogController extends BaseInfoProperties {
         }
 
         PagedGridResult gridResult = vlogService.getMyFriendVlogList(myId,
-                                                                    page,
-                                                                    pageSize);
+                page,
+                pageSize);
         return GraceJSONResult.ok(gridResult);
     }
 }

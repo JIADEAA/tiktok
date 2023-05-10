@@ -157,8 +157,9 @@ public class FansServiceImpl extends BaseInfoProperties implements FansService {
         List<FansVO> list = fansMapperCustom.queryMyFans(map);
 
         for (FansVO f : list) {
-            String relationship = redis.get(REDIS_FANS_AND_VLOGGER_RELATIONSHIP + ":" + myId + ":" + f.getFanId());
-            if (StringUtils.isNotBlank(relationship) && relationship.equalsIgnoreCase("1")) {
+//            String relationship = redis.get(REDIS_FANS_AND_VLOGGER_RELATIONSHIP + ":" + myId + ":" + f.getFanId());
+            Long ifFriend = redis.zRank(FOLLOWS + ":" + myId, f.getFanId());
+            if (ifFriend != null) {
                 f.setFriend(true);
             }
         }
