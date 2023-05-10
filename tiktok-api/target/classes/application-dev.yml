@@ -19,14 +19,19 @@ spring:
       max-lifetime: 18000000                  # 连接池的最大生命时长（毫秒），超时则会被释放（retired）
       connection-test-query: SELECT 1
   redis:
-    host: localhost
+    host: 192.168.31.60
     port: 6379
     database: 0
   data:
     mongodb:
       uri: mongodb://root:123456@192.168.31.60:27017
       database: tiktok
-
+  rabbitmq:
+    host: 192.168.31.60
+    username: admin
+    password: admin
+    virtual-host: tiktok
+    port: 5672
 
 # MinIO 配置
 minio:

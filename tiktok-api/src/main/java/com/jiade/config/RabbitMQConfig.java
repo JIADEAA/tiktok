@@ -20,27 +20,60 @@ public class RabbitMQConfig {
 
     public static final String EXCHANGE_MSG = "exchange_msg";
 
-    public static final String QUEUE_SYS_MSG = "queue_sys_msg";
+    public static final String QUEUE_MSG_LIKE = "queue_msg_like";
+    public static final String QUEUE_MSG_COMMENT = "queue_msg_comment";
+    public static final String QUEUE_MSG_FANS = "queue_msg_fans";
 
     @Bean(EXCHANGE_MSG)
-    public Exchange exchange(){
+    public Exchange exchange() {
         return ExchangeBuilder
                 .topicExchange(EXCHANGE_MSG)
                 .durable(true)
                 .build();
     }
-    @Bean(QUEUE_SYS_MSG)
-    public Queue queue(){
-        return new Queue(QUEUE_SYS_MSG, true);
+
+    @Bean(QUEUE_MSG_LIKE)
+    public Queue queueLike() {
+        return new Queue(QUEUE_MSG_LIKE, true);
+    }
+
+    @Bean(QUEUE_MSG_COMMENT)
+    public Queue queueCOMMENT() {
+        return new Queue(QUEUE_MSG_COMMENT, true);
+    }
+
+    @Bean(QUEUE_MSG_FANS)
+    public Queue queueFANS() {
+        return new Queue(QUEUE_MSG_FANS, true);
     }
 
     @Bean
-    public Binding binding(@Qualifier(EXCHANGE_MSG) Exchange exchange,
-                           @Qualifier(QUEUE_SYS_MSG) Queue queue){
+    public Binding bindingFANS(@Qualifier(EXCHANGE_MSG) Exchange exchange,
+                           @Qualifier(QUEUE_MSG_FANS) Queue queue) {
         return BindingBuilder
                 .bind(queue)
                 .to(exchange)
-                .with("sys_msg_*")
+                .with("msg_fans")
+                .noargs();
+    }
+
+    @Bean
+    public Binding bindingCOMMENT(@Qualifier(EXCHANGE_MSG) Exchange exchange,
+                           @Qualifier(QUEUE_MSG_COMMENT) Queue queue) {
+        return BindingBuilder
+                .bind(queue)
+                .to(exchange)
+                .with("msg_comment")
+                .noargs();
+    }
+
+    @Bean
+    public Binding bindingLIKE(@Qualifier(EXCHANGE_MSG) Exchange exchange,
+                           @Qualifier(QUEUE_MSG_LIKE) Queue queue) {
+        return BindingBuilder
+                .bind(queue)
+                .to(exchange)
+                .with("msg_like")
                 .noargs();
     }
 }

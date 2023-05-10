@@ -14,8 +14,10 @@ import com.jiade.service.MsgService;
 import com.jiade.service.VlogService;
 import com.jiade.utils.PagedGridResult;
 import com.jiade.vo.CommentVO;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.n3r.idworker.Sid;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,10 +29,14 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@Slf4j
 public class CommentServiceImpl extends BaseInfoProperties implements CommentService {
 
     @Autowired
     private CommentMapper commentMapper;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     @Autowired
     private CommentMapperCustom commentMapperCustom;
@@ -71,26 +77,33 @@ public class CommentServiceImpl extends BaseInfoProperties implements CommentSer
         BeanUtils.copyProperties(comment, commentVO);
 
 
-
         // 系统消息：评论/回复
         Vlog vlog = vlogService.getVlog(commentBO.getVlogId());
-        Map msgContent = new HashMap();
-        msgContent.put("vlogId", vlog.getId());
-        msgContent.put("vlogCover", vlog.getCover());
-        msgContent.put("commentId", commentId);
-        msgContent.put("commentContent", commentBO.getContent());
+//        Map msgContent = new HashMap();
+//        msgContent.put("vlogId", vlog.getId());
+//        msgContent.put("vlogCover", vlog.getCover());
+//        msgContent.put("commentId", commentId);
+//        msgContent.put("commentContent", commentBO.getContent());
         Integer type = MessageEnum.COMMENT_VLOG.type;
         if (StringUtils.isNotBlank(commentBO.getFatherCommentId()) &&
-                !commentBO.getFatherCommentId().equalsIgnoreCase("0") ) {
+                !commentBO.getFatherCommentId().equalsIgnoreCase("0")) {
             type = MessageEnum.REPLY_YOU.type;
         }
 
-        msgService.createMsg(commentBO.getCommentUserId(),
-                commentBO.getVlogerId(),
-                type,
-                msgContent);
+//        msgService.createMsg(commentBO.getCommentUserId(),
+//                commentBO.getVlogerId(),
+//                type,
+//                msgContent);
+        Map msg = new HashMap();
+        msg.put("fromUserId", commentBO.getCommentUserId());
+        msg.put("toUserId", commentBO.getVlogerId());
+        msg.put("type", type);
+        msg.put("commentId", commentId);
+        msg.put("commentContent", commentBO.getContent());
+        log.info("创建消息msg_comment");
 
 
+        rabbitTemplate.convertAndSend("exchange_msg","msg_comment",msg);
 
         return commentVO;
     }
@@ -108,7 +121,7 @@ public class CommentServiceImpl extends BaseInfoProperties implements CommentSer
 
         List<CommentVO> list = commentMapperCustom.getCommentList(map);
 
-        for (CommentVO cv:list) {
+        for (CommentVO cv : list) {
             String commentId = cv.getCommentId();
 
             // 当前短视频的某个评论的点赞总数

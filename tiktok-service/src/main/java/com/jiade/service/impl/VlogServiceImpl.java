@@ -15,8 +15,10 @@ import com.jiade.service.MsgService;
 import com.jiade.service.VlogService;
 import com.jiade.utils.PagedGridResult;
 import com.jiade.vo.IndexVlogVO;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.n3r.idworker.Sid;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,11 +32,13 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@Slf4j
 public class VlogServiceImpl extends BaseInfoProperties implements VlogService {
 
     @Autowired
     private VlogMapper vlogMapper;
-
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
     @Autowired
     private VlogMapperCustom vlogMapperCustom;
 
@@ -43,8 +47,7 @@ public class VlogServiceImpl extends BaseInfoProperties implements VlogService {
 
     @Autowired
     private FansService fansService;
-    @Autowired
-    private MsgService msgService;
+
 
     @Autowired
     private Sid sid;
@@ -208,13 +211,22 @@ public class VlogServiceImpl extends BaseInfoProperties implements VlogService {
 
         // 系统消息：点赞短视频
         Vlog vlog = this.getVlog(vlogId);
-        Map msgContent = new HashMap();
-        msgContent.put("vlogId", vlogId);
-        msgContent.put("vlogCover", vlog.getCover());
-        msgService.createMsg(userId,
-                            vlog.getVlogerId(),
-                            MessageEnum.LIKE_VLOG.type,
-                            msgContent);
+        Map msg = new HashMap();
+        msg.put("vlogId", vlogId);
+        msg.put("vlogCover", vlog.getCover());
+        msg.put("fromUserId", userId);
+        msg.put("toUserId", vlog.getVlogerId());
+        msg.put("type", MessageEnum.LIKE_VLOG.type);
+
+
+
+//        msgService.createMsg(userId,
+//                            vlog.getVlogerId(),
+//                            MessageEnum.LIKE_VLOG.type,
+//                            msgContent);
+        log.info("创建消息msg_like");
+        rabbitTemplate.convertAndSend("exchange_msg","msg_like",msg);
+
     }
 
     @Override

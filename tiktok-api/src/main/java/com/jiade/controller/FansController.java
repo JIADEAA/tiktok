@@ -41,7 +41,6 @@ public class FansController extends BaseInfoProperties {
         Users vloger = userService.getUser(vlogerId);
         Users myInfo = userService.getUser(myId);
 
-        // fixme: 两个用户id的数据库查询后的判断，是分开好？还是合并判断好？
         if (myInfo == null || vloger == null) {
             return GraceJSONResult.errorCustom(ResponseStatusEnum.SYSTEM_RESPONSE_NO_INFO);
         }

@@ -44,7 +44,7 @@ public class SendSMS {
         SendSmsRequest request = new SendSmsRequest();
         request.setSignName("仿tiktok");
         request.setTemplateCode("SMS_276065009");
-        request.setPhoneNumbers("15089921298");
+        request.setPhoneNumbers(phone);
         request.setTemplateParam("{\"code\":\""+code+"\"}");
 
         try {

@@ -53,11 +53,11 @@ public class UserServiceImpl implements UserService {
         user.setId(userId);
 
         user.setMobile(mobile);
-        user.setNickname("用户：" + DesensitizationUtil.commonDisplay(mobile));
-        user.setImoocNum("用户：" + DesensitizationUtil.commonDisplay(mobile));
+        user.setNickname(DesensitizationUtil.commonDisplay(mobile));
+        user.setImoocNum(DesensitizationUtil.commonDisplay(mobile));
         user.setFace(USER_FACE1);
 
-        user.setBirthday(DateUtil.stringToDate("1900-01-01"));
+        user.setBirthday(DateUtil.stringToDate("2000-01-01"));
         user.setSex(Sex.secret.type);
 
         user.setCountry("中国");

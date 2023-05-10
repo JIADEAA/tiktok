@@ -14,6 +14,7 @@ import com.jiade.vo.FansVO;
 import com.jiade.vo.VlogerVO;
 import org.apache.commons.lang3.StringUtils;
 import org.n3r.idworker.Sid;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +35,8 @@ public class FansServiceImpl extends BaseInfoProperties implements FansService {
 
     @Autowired
     private MsgService msgService;
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     @Autowired
     private Sid sid;
@@ -63,8 +66,13 @@ public class FansServiceImpl extends BaseInfoProperties implements FansService {
         fansMapper.insert(fans);
 
 
-        // 系统消息：关注
-        msgService.createMsg(myId, vlogerId, MessageEnum.FOLLOW_YOU.type, null);
+//        // 系统消息：关注
+//        msgService.createMsg(myId, vlogerId, MessageEnum.FOLLOW_YOU.type, null);
+        Map msg = new HashMap();
+        msg.put("fromUserId", myId);
+        msg.put("toUserId", vlogerId);
+        msg.put("type", MessageEnum.FOLLOW_YOU.type);
+        rabbitTemplate.convertAndSend("exchange_msg", "msg_fans", msg);
     }
 
     public Fans queryFansRelationship(String fanId, String vlogerId) {
@@ -73,11 +81,11 @@ public class FansServiceImpl extends BaseInfoProperties implements FansService {
         criteria.andEqualTo("vlogerId", vlogerId);
         criteria.andEqualTo("fanId", fanId);
 
-        List list =  fansMapper.selectByExample(example);
+        List list = fansMapper.selectByExample(example);
 
         Fans fan = null;
         if (list != null && list.size() > 0 && !list.isEmpty()) {
-            fan = (Fans)list.get(0);
+            fan = (Fans) list.get(0);
         }
 
         return fan;

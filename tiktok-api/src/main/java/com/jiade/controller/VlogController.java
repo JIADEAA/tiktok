@@ -22,7 +22,6 @@ public class VlogController extends BaseInfoProperties {
 
     @PostMapping("publish")
     public GraceJSONResult publish(@RequestBody VlogBO vlogBO) {
-        // FIXME 作业，校验VlogBO
         vlogService.createVlog(vlogBO);
         return GraceJSONResult.ok();
     }
