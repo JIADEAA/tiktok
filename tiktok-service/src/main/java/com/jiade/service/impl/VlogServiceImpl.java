@@ -18,6 +18,9 @@ import com.jiade.vo.IndexVlogVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.n3r.idworker.Sid;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageProperties;
+import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -223,7 +223,11 @@ public class VlogServiceImpl extends BaseInfoProperties implements VlogService {
 //                            MessageEnum.LIKE_VLOG.type,
 //                            msgContent);
         log.info("创建消息msg_like");
-        rabbitTemplate.convertAndSend("exchange_msg", "msg_like", msg);
+
+            //设置消息唯一ID
+
+
+        rabbitTemplate.convertAndSend("exchange_msg", "msg_like", msg,new CorrelationData(UUID.randomUUID().toString().concat("-")));
 
     }
 

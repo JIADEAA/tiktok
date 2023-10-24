@@ -31,13 +31,9 @@ public class UserInfoController extends BaseInfoProperties {
 
     @GetMapping("query")
     public GraceJSONResult query(@RequestParam String userId) throws Exception {
-
         Users user = userService.getUser(userId);
-
         UsersVO usersVO = new UsersVO();
         BeanUtils.copyProperties(user, usersVO);
-
-
         /**
          *
          // 我的关注博主总数量
@@ -127,7 +123,6 @@ public class UserInfoController extends BaseInfoProperties {
                 + minIOConfig.getBucketName()
                 + "/"
                 + fileName;
-
 
         // 修改图片地址到数据库
         UpdatedUserBO updatedUserBO = new UpdatedUserBO();

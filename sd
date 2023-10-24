@@ -1,0 +1,255 @@
+port 6379
+#bind 0.0.0.0
+#启用集群模式
+cluster-enabled yes
+cluster-config-file nodes23.conf
+#超时时间
+cluster-node-timeout 5000
+#集群连接地址及端口
+cluster-announce-ip 192.168.0.7
+cluster-announce-port 8079
+cluster-announce-bus-port 18079
+appendonly yes
+#集群加密
+masterauth 123456
+requirepass 123456
+
+docker run -it --net host -d -p 7001:7001  -v /home/redis.conf:/etc/redis/redis.conf -v /mnt/redis/7001:/data   --name redis-node7001 redis:latest redis-server /etc/redis/redis.conf
+docker run -it --net host -d -p 7002:7002  -v /home/redis.conf:/etc/redis/redis2.conf -v /mnt/redis/7002:/data   --name redis-node7002 redis:latest redis-server /etc/redis/redis2.conf
+docker run -it --net host -d -p 7003:7003 -v /home/redis.conf:/etc/redis/redis3.conf -v /mnt/redis/7003:/data   --name redis-node7003 redis:latest redis-server /etc/redis/redis3.conf
+docker run -it --net host -d -p 7004:7004  -v /home/redis.conf:/etc/redis/redis4.conf -v /mnt/redis/7004:/data   --name redis-node7004 redis:latest redis-server /etc/redis/redis4.conf
+docker run -it --net host -d -p 7005:7005  -v /home/redis.conf:/etc/redis/redis5.conf -v /mnt/redis/7005:/data   --name redis-node7005 redis:latest redis-server /etc/redis/redis5.conf
+docker run -it --net host -d -p 7006:7006  -v /home/redis.conf:/etc/redis/redis6.conf -v /mnt/redis/7006:/data   --name redis-node7006 redis:latest redis-server /etc/redis/redis6.conf
+docker run -it -d -p 7001:7001  -v /data/redis-cluster/redis-node1.conf:/etc/redis/redis-node1.conf -v /data/redis-cluster/data-node1:/data   --name redis-node1 redis:latest redis-server /etc/redis/redis-node1.conf
+
+docker run -it -d -p 7001:7001-v /data/redis-cluster/redis-node2.conf:/etc/redis/redis-node2.conf -v /data/redis-cluster/data-node2:/data  --name redis-node2 redis:latest redis-server /etc/redis/redis-node2.conf
+
+docker run -it -d -p 7003:7003 -v /data/redis-cluster/redis-node3.conf:/etc/redis/redis-node3.conf -v /data/redis-cluster/data-node3:/data  --name redis-node3 redis:latest redis-server /etc/redis/redis-node3.conf
+
+docker run -it -d -p 7004:7004  -v /data/redis-cluster/redis-node4.conf:/etc/redis/redis-node4.conf -v /data/redis-cluster/data-node4:/data  --name redis-node4 redis:latest redis-server /etc/redis/redis-node4.conf
+
+docker run -it -d -p 7005:7005 -p 17005:17005 -v /data/redis-cluster/redis-node5.conf:/etc/redis/redis-node5.conf -v /data/redis-cluster/data-node5:/data  --name redis-node5 redis:latest redis-server /etc/redis/redis-node5.conf
+
+docker run -it -d -p 7006:7006 -p 17006:17006 -v /data/redis-cluster/redis-node6.conf:/etc/redis/redis-node6.conf -v /data/redis-cluster/data-node6:/data  --name redis-node6 redis:latest redis-server /etc/redis/redis-node6.conf
+
+redis-cli --cluster create 192.168.31.61:7001 192.168.31.61:7002 192.168.31.61:7003 192.168.31.61:7004 127.0.0.1:7005 127.0.0.1:7006 --cluster-replicas 1 -a 123456
+docker create --name redis-6386 --restart=always --net host  \
+-v /mnt/redis/6386/data:/data redis \
+--requirepass 123456 \
+--masterauth 123456 \
+--port 6386 \
+--appendonly yes \
+--cluster-enabled yes \
+--cluster-announce-ip 192.168.31.61
+ docker exec -it redis-6381 redis-cli  -a 123456 --cluster create 127.0.0.1:6381 127.0.0.1:6382 127.0.0.1:6383 127.0.0.1:6384 127.0.0.1:6385 127.0.0.1:6386 --cluster-replicas 1
+docker exec -it redis-6381 redis-cli  -a 123456 --cluster create 127.0.0.1:6381 127.0.0.1:6382 127.0.0.1:6383 127.0.0.1:6384 127.0.0.1:6385 127.0.0.1:6386 --cluster-replicas 1
+docker create --name redis-6382 --restart=always --net host  \
+-v /mnt/redis/6382/data:/data redis \
+--requirepass 123456 \
+--masterauth 123456 \
+--port 6382 \
+--appendonly yes \
+--cluster-enabled yes \
+--cluster-announce-ip 192.168.31.61
+
+mkdir -p /mnt/data/rediscluster/7001/data
+mkdir -p /mnt/data/rediscluster/7001/conf
+mkdir -p /mnt/data/rediscluster/7002/data
+mkdir -p /mnt/data/rediscluster/7002/conf
+mkdir -p /mnt/data/rediscluster/7003/data
+mkdir -p /mnt/data/rediscluster/7003/conf
+mkdir -p /mnt/data/rediscluster/7101/data
+mkdir -p /mnt/data/rediscluster/7101/conf
+mkdir -p /mnt/data/rediscluster/7102/data
+mkdir -p /mnt/data/rediscluster/7102/conf
+mkdir -p /mnt/data/rediscluster/7103/data
+mkdir -p /mnt/data/rediscluster/7103/conf
+redis-cli --cluster create 127.0.0.1:7001  127.0.0.1:7002  127.0.0.1:7003 127.0.0.1:7101 127.0.0.1:7102  127.0.0.1:7103  --cluster-replicas 1
+
+
+docker run -i -d --name redis0 -p 6370:6379 --network=redisnet --ip 192.168.0.2 -v /home/redis0:/outer  -v /home/redis0.conf:/outer/redis.conf redis redis-server /outer/redis.conf
+docker run -i -d --name redis1 -p 6371:6379 --network=redisnet --ip 192.168.0.3 -v /home/redis1:/outer -v /home/redis1.conf:/outer/redis.conf redis redis-server /outer/redis.conf
+docker run -i -d --name redis2 -p 6372:6379 --network=redisnet --ip 192.168.0.4 -v /home/redis2:/outer -v /home/redis2.conf:/outer/redis.conf redis redis-server /outer/redis.conf
+docker run -i -d --name redis3 -p 6373:6379 --network=redisnet --ip 192.168.0.5 -v /home/redis3:/outer -v /home/redis3.conf:/outer/redis.conf redis redis-server /outer/redis.conf
+docker run -i -d --name redis4 -p 6374:6379 --network=redisnet --ip 192.168.0.6 -v /home/redis4:/outer -v /home/redis4.conf:/outer/redis.conf redis redis-server /outer/redis.conf
+docker run -i -d --name redis5 -p 6375:6379 --network=redisnet --ip 192.168.0.7 -v /home/redis5:/outer -v /home/redis5.conf:/outer/redis.conf redis redis-server /outer/redis.conf
+netsh interface portproxy add v4tov4 listenaddress=192.168.0.2 listenport=6379 connectport=6370 connectaddress=127.0.0.1
+netsh interface portproxy add v4tov4 listenaddress=192.168.0.3 listenport=6379 connectport=6371 connectaddress=127.0.0.1
+netsh interface portproxy add v4tov4 listenaddress=192.168.0.4 listenport=6379 connectport=6372 connectaddress=127.0.0.1
+netsh interface portproxy add v4tov4 listenaddress=192.168.0.5 listenport=6379 connectport=6373 connectaddress=127.0.0.1
+netsh interface portproxy add v4tov4 listenaddress=192.168.0.6 listenport=6379 connectport=6374 connectaddress=127.0.0.1
+netsh interface portproxy add v4tov4 listenaddress=192.168.0.7 listenport=6379 connectport=6375 connectaddress=127.0.0.1
+docker exec -it redis0 redis-cli -a 123456 --cluster create 192.168.0.2:6381 192.168.0.3:6382 192.168.0.4:6383 192.168.0.5:6384 192.168.0.6:6385 192.168.0.7:6386 --cluster-replicas 1
+
+docker run -d --name redis-6386 --restart=always -p 6386:6379 \
+-v /mnt/redis/6386/data:/data redis \
+--requirepass 123456 \
+--masterauth 123456 \
+--port 6379 \
+--appendonly yes \
+--cluster-enabled yes \
+--cluster-announce-ip 47.107.95.195
+docker run -d --name redis-6385 --restart=always -p 6385:6379 \
+-v /mnt/redis/6385/data:/data redis \
+--requirepass 123456 \
+--masterauth 123456 \
+--port 6379 \
+--appendonly yes \
+--cluster-enabled yes \
+--cluster-announce-ip 47.107.95.195
+docker run -d --name redis-6384 --restart=always -p 6384:6379 \
+-v /mnt/redis/6384/data:/data redis \
+--requirepass 123456 \
+--masterauth 123456 \
+--port 6379 \
+--appendonly yes \
+--cluster-enabled yes \
+--cluster-announce-ip 47.107.95.195
+docker run -d --name redis-6383 --restart=always -p 6383:6379 \
+-v /mnt/redis/6383/data:/data redis \
+--requirepass 123456 \
+--masterauth 123456 \
+--port 6379 \
+--appendonly yes \
+--cluster-enabled yes \
+--cluster-announce-ip 47.107.95.195
+docker run -d --name redis-6382 --restart=always -p 6382:6379 \
+-v /mnt/redis/6382/data:/data redis \
+--requirepass 123456 \
+--masterauth 123456 \
+--port 6379 \
+--appendonly yes \
+--cluster-enabled yes \
+--cluster-announce-ip 47.107.95.195
+
+docker run -d --name redis-6381 --restart=always -p 6381:6379 \
+-v /mnt/redis/6381/data:/data redis \
+--requirepass 123456 \
+--masterauth 123456 \
+--port 6379 \
+--appendonly yes \
+--cluster-enabled yes \
+--cluster-announce-ip 47.107.95.195
+
+docker exec -it redis-6381 redis-cli -a 123456 --cluster create 47.107.95.195:6381 47.107.95.195:6382 47.107.95.195:6383 47.107.95.195:6384 47.107.95.195:6385 47.107.95.195:6386 --cluster-replicas 1
+
+
+docker create --name redis-6381 --restart=always --net host  \
+-v /mnt/redis/6381/data:/data redis \
+--requirepass 123456 \
+--masterauth 123456 \
+--port 6381 \
+--protected-mode no \
+--appendonly yes \
+--cluster-enabled yes \
+--cluster-announce-ip 47.107.95.195
+
+docker create --name redis-6382 --restart=always --net host  \
+-v /mnt/redis/6382/data:/data redis \
+--requirepass 123456 \
+--masterauth 123456 \
+--port 6382 \
+--protected-mode no \
+--appendonly yes \
+--cluster-enabled yes \
+--cluster-announce-ip 47.107.95.195
+
+docker create --name redis-6383 --restart=always --net host  \
+-v /mnt/redis/6383/data:/data redis \
+--requirepass 123456 \
+--masterauth 123456 \
+--port 6383 \
+--protected-mode no \
+--appendonly yes \
+--cluster-enabled yes \
+--cluster-announce-ip 47.107.95.195
+
+docker create --name redis-6384 --restart=always --net host  \
+-v /mnt/redis/6384/data:/data redis \
+--requirepass 123456 \
+--masterauth 123456 \
+--port 6384 \
+--protected-mode no \
+--appendonly yes \
+--cluster-enabled yes \
+--cluster-announce-ip 47.107.95.195
+
+docker create --name redis-6385 --restart=always --net host  \
+-v /mnt/redis/6385/data:/data redis \
+--requirepass 123456 \
+--masterauth 123456 \
+--port 6385 \
+--protected-mode no \
+--appendonly yes \
+--cluster-enabled yes \
+--cluster-announce-ip 47.107.95.195
+
+docker create --name redis-6386 --restart=always --net host  \
+-v /mnt/redis/6386/data:/data redis \
+--requirepass 123456 \
+--masterauth 123456 \
+--port 6386 \
+--protected-mode no \
+--appendonly yes \
+--cluster-enabled yes \
+--cluster-announce-ip 47.107.95.195
+
+
+
+
+
+
+
+docker create --name redis-6381 --restart=always --net host  \
+-v /mnt/redis/6381/data:/data redis \
+--requirepass 123456 \
+--masterauth 123456 \
+--port 6381 \
+--appendonly yes \
+--cluster-enabled yes \
+--cluster-announce-ip 127.0.0.1
+
+docker create --name redis-6382 --restart=always --net host  \
+-v /mnt/redis/6382/data:/data redis \
+--requirepass 123456 \
+--masterauth 123456 \
+--port 6382 \
+--appendonly yes \
+--cluster-enabled yes \
+--cluster-announce-ip 127.0.0.1
+
+docker create --name redis-6383 --restart=always --net host  \
+-v /mnt/redis/6383/data:/data redis \
+--requirepass 123456 \
+--masterauth 123456 \
+--port 6383 \
+--appendonly yes \
+--cluster-enabled yes \
+--cluster-announce-ip 127.0.0.1
+
+docker create --name redis-6384 --restart=always --net host  \
+-v /mnt/redis/6384/data:/data redis \
+--requirepass 123456 \
+--masterauth 123456 \
+--port 6384 \
+--appendonly yes \
+--cluster-enabled yes \
+--cluster-announce-ip 127.0.0.1
+
+docker create --name redis-6385 --restart=always --net host  \
+-v /mnt/redis/6385/data:/data redis \
+--requirepass 123456 \
+--masterauth 123456 \
+--port 6385 \
+--appendonly yes \
+--cluster-enabled yes \
+--cluster-announce-ip 127.0.0.1
+
+docker create --name redis-6386 --restart=always --net host  \
+-v /mnt/redis/6386/data:/data redis \
+--requirepass 123456 \
+--masterauth 123456 \
+--port 6386 \
+--appendonly yes \
+--cluster-enabled yes \
+--cluster-announce-ip 127.0.0.1

@@ -7,7 +7,9 @@ import com.jiade.pojo.Users;
 import com.jiade.repository.MessageRepository;
 import com.jiade.service.MsgService;
 import com.jiade.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.n3r.idworker.utils.SystemDateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@Slf4j
 public class MsgServiceImpl extends BaseInfoProperties implements MsgService {
 
     @Autowired
@@ -48,8 +51,9 @@ public class MsgServiceImpl extends BaseInfoProperties implements MsgService {
         if (msgContent != null) {
             messageMO.setMsgContent(msgContent);
         }
+        log.info(SystemDateUtils.getStrDate());
 
-        messageMO.setCreateTime(new Date());
+        messageMO.setCreateTime(SystemDateUtils.getDaDate());
 
         messageRepository.save(messageMO);
     }

@@ -1,5 +1,6 @@
 package com.jiade.mo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -37,5 +38,6 @@ public class MessageMO {
     private Map msgContent;              // 消息内容
 
     @Field("createTime")
+    @JsonFormat(locale = "zh", timezone = "Asia/Shanghai", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;            // 消息创建时间
 }

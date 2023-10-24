@@ -22,7 +22,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="tiktok" options="-parameters" />
+      <module name="tiktok" options="" />
       <module name="tiktok-api" options="-parameters" />
       <module name="tiktok-common" options="-parameters" />
       <module name="tiktok-mapper" options="-parameters" />

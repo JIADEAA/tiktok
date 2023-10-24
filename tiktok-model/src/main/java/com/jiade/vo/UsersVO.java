@@ -1,5 +1,6 @@
 package com.jiade.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,7 +27,9 @@ public class UsersVO {
     private String description;
     private String bgImg;
     private Integer canImoocNumBeUpdated;
+    @JsonFormat(locale = "zh", timezone = "Asia/Shanghai", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createdTime;
+    @JsonFormat(locale = "zh", timezone = "Asia/Shanghai", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updatedTime;
 
     private String userToken;       // 用户token，传递给前端

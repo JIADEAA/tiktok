@@ -12,11 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- * @author: JIADE
- * @description: UserTokenInterceptor
- * @date: 2023/4/7 10:06
- **/
+
 @Slf4j
 @Component
 public class UserTokenInterceptor extends BaseInfoProperties implements HandlerInterceptor {

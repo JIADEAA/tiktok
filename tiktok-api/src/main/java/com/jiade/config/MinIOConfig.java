@@ -7,11 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * @author: JIADE
- * @description: MinIOConfig
- * @date: 2023/4/7 10:08
- **/
+
 @Configuration
 @Data
 public class MinIOConfig {
@@ -30,7 +26,6 @@ public class MinIOConfig {
     private Integer imgSize;
     @Value("${minio.fileSize}")
     private Integer fileSize;
-
     @Bean
     public MinIOUtils creatMinioClient() {
         return new MinIOUtils(endpoint, bucketName, accessKey, secretKey, imgSize, fileSize);

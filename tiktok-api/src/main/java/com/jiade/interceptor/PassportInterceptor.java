@@ -12,11 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- * @author: JIADE
- * @description: PassportInterceptor
- * @date: 2023/4/6 16:40
- **/
+
 @Slf4j
 @Component
 public class PassportInterceptor extends BaseInfoProperties implements HandlerInterceptor {

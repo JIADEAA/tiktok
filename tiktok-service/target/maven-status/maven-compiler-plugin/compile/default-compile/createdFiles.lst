@@ -1,0 +1,11 @@
+com\jiade\service\UserService.class
+com\jiade\base\BaseInfoProperties.class
+com\jiade\service\impl\CommentServiceImpl.class
+com\jiade\service\impl\MsgServiceImpl.class
+com\jiade\service\VlogService.class
+com\jiade\service\CommentService.class
+com\jiade\service\impl\FansServiceImpl.class
+com\jiade\service\MsgService.class
+com\jiade\service\FansService.class
+com\jiade\service\impl\UserServiceImpl.class
+com\jiade\service\impl\VlogServiceImpl.class

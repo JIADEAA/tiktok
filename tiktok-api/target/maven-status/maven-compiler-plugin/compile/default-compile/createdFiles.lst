@@ -1,0 +1,17 @@
+com\jiade\config\MinIOConfig.class
+com\jiade\controller\MsgController.class
+com\jiade\config\InterceptorConfig.class
+com\jiade\config\Knife4jConfig.class
+com\jiade\controller\VlogController.class
+com\jiade\controller\CommentController.class
+com\jiade\config\RabbitMQConsumer.class
+com\jiade\controller\FansController.class
+com\jiade\controller\PassportController.class
+com\jiade\interceptor\CorsInterceptor.class
+com\jiade\Application.class
+com\jiade\config\RabbitMQConfig$2.class
+com\jiade\controller\UserInfoController.class
+com\jiade\config\RabbitMQConfig.class
+com\jiade\config\RabbitMQConfig$1.class
+com\jiade\interceptor\PassportInterceptor.class
+com\jiade\interceptor\UserTokenInterceptor.class

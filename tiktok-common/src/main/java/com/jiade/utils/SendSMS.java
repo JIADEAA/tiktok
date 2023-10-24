@@ -10,6 +10,8 @@ import com.aliyuncs.exceptions.ServerException;
 import com.aliyuncs.profile.DefaultProfile;
 import com.google.gson.Gson;
 
+import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +25,7 @@ import java.util.concurrent.CompletableFuture;
  * @date: 2023/4/6 15:35
  **/
 @Component
+@Slf4j
 public class SendSMS {
     @Autowired
     private AliyunProperties aliyunProperties;
@@ -31,12 +34,12 @@ public class SendSMS {
 
         DefaultProfile profile = DefaultProfile.getProfile("cn-hangzhou", aliyunProperties.getSecretId(), aliyunProperties.getSecretKey());
         /** use STS Token
-        DefaultProfile profile = DefaultProfile.getProfile(
-            "<your-region-id>",           // The region ID
-            "<your-access-key-id>",       // The AccessKey ID of the RAM account
-            "<your-access-key-secret>",   // The AccessKey Secret of the RAM account
-            "<your-sts-token>");          // STS Token
-        **/
+         DefaultProfile profile = DefaultProfile.getProfile(
+         "<your-region-id>",           // The region ID
+         "<your-access-key-id>",       // The AccessKey ID of the RAM account
+         "<your-access-key-secret>",   // The AccessKey Secret of the RAM account
+         "<your-sts-token>");          // STS Token
+         **/
 
         IAcsClient client = new DefaultAcsClient(profile);
 
@@ -44,8 +47,17 @@ public class SendSMS {
         SendSmsRequest request = new SendSmsRequest();
         request.setSignName("仿tiktok");
         request.setTemplateCode("SMS_276065009");
-        request.setPhoneNumbers(phone);
-        request.setTemplateParam("{\"code\":\""+code+"\"}");
+        log.info(phone);
+        if (phone.equals("15727558380")) {
+            request.setPhoneNumbers("15727558380");
+        } else if (phone.equals("18704646377")){
+            request.setPhoneNumbers("18704646377");
+        }else if (phone.equals("18370950053")){
+            request.setPhoneNumbers("18370950053");
+        }else if (phone.equals("15089921298")){
+            request.setPhoneNumbers("15089921298");
+        }
+        request.setTemplateParam("{\"code\":\"" + code + "\"}");
 
         try {
             SendSmsResponse response = client.getAcsResponse(request);

@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private Sid sid;
-    private static final String USER_FACE1 = "http://122.152.205.72:88/group1/M00/00/05/CpoxxF6ZUySASMbOAABBAXhjY0Y649.png";
+    private static final String USER_FACE1 = "http://47.107.95.195:9000/tiktok/1685620301585.jpg";
 
     @Override
     public Users queryMobileIsExist(String mobile) {

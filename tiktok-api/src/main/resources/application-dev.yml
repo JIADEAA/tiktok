@@ -6,7 +6,7 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource      # 数据源的类型，可以更改为其他的数据源配置，比如druid
     driver-class-name: com.mysql.cj.jdbc.Driver
     # mysql/MariaDB 的数据库驱动类名称
-    url: jdbc:mysql://192.168.31.60:3306/tiktok-dev?characterEncoding=utf8&useSSL=false&serverTimezone=UTC&rewriteBatchedStatements=true&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://192.168.31.61:3306/tiktok-dev?characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true&allowPublicKeyRetrieval=true
     username: root
     password: 123456
     hikari:
@@ -19,26 +19,40 @@ spring:
       max-lifetime: 18000000                  # 连接池的最大生命时长（毫秒），超时则会被释放（retired）
       connection-test-query: SELECT 1
   redis:
-    host: 192.168.31.60
-    port: 6379
-    database: 0
-  data:
+    cluster:
+      nodes: 47.107.95.195:6381,47.107.95.195:6382,47.107.95.195:6383,47.107.95.195:6384,47.107.95.195:6385,47.107.95.195:6386
+    password: 123456
+    timeout: 10000
+    lettuce:
+      pool:
+        max-active: 200
+        max-wait: -1
+        max-idle: 10
+        min-idle: 0
     mongodb:
-      uri: mongodb://root:123456@192.168.31.60:27017
+      uri: mongodb://root:123456@192.168.31.61:27017
       database: tiktok
   rabbitmq:
-    host: 192.168.31.60
+    host: 192.168.31.61
     username: admin
     password: admin
     virtual-host: tiktok
     port: 5672
+    publisher-confirm-type: correlated
+    #1.2、确认消息从交换机中到队列中
+    publisher-returns: true
+    listener:
+      simple:
+        acknowledge-mode: manual
 
 # MinIO 配置
 minio:
-  endpoint: http://192.168.31.60:9090      # MinIO服务地址
-  fileHost: http://192.168.31.60:9090      # 文件地址host
+  endpoint: http://192.168.31.61:9090      # MinIO服务地址
+  fileHost: http://192.168.31.61:9090      # 文件地址host
   bucketName: tiktok                      # 存储桶bucket名称
   accessKey: jiade                         # 用户名
   secretKey: 12345678                     # 密码
   imgSize: 1024                           # 图片大小限制，单位：m
   fileSize: 1024                          # 文件大小限制，单位：m
+
+

@@ -1,5 +1,6 @@
 package com.jiade.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,6 +24,7 @@ public class CommentVO {
     private String content;
     private Integer likeCounts;
     private String replyedUserNickname;
+    @JsonFormat(locale = "zh", timezone = "Asia/Shanghai", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
     private Integer isLike = 0;
 }

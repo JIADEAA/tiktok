@@ -1,5 +1,7 @@
 package com.jiade.pojo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.Column;
 import javax.persistence.Id;
 import java.util.Date;
@@ -60,12 +62,14 @@ public class Vlog {
     /**
      * 创建时间 创建时间
      */
+    @JsonFormat(locale = "zh", timezone = "Asia/Shanghai", pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(name = "created_time")
     private Date createdTime;
 
     /**
      * 更新时间 更新时间
      */
+    @JsonFormat(locale = "zh", timezone = "Asia/Shanghai", pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(name = "updated_time")
     private Date updatedTime;
 

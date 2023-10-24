@@ -21,14 +21,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.UUID;
 
-/**
- * @author: JIADE
- * @description: PassprotController
- * @date: 2023/4/6 15:59
- **/
 
 @Slf4j
-@Api(tags = "PassprotController 短信调用接口模块")
+@Api(tags = "PassportController 短信调用接口模块")
 @RequestMapping("passport")
 @RestController
 public class PassportController extends BaseInfoProperties {
@@ -53,8 +48,9 @@ public class PassportController extends BaseInfoProperties {
         redis.setnx60s(MOBILE_SMSCODE + ":" + userIp, userIp);
 
         String code = (int) ((Math.random() * 9 + 1) * 100000) + "";
-        sendSMS.sendSMS(MyInfo.getMobile(), code);
-//        sendSms.sendSMS(mobile, code);
+        log.info(mobile);
+        sendSMS.sendSMS(mobile, code);
+
         log.info(code);
 
         // 把验证码放入到redis中，用于后续的验证

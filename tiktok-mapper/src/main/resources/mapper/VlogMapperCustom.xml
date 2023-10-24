@@ -61,8 +61,6 @@
         SELECT
             v.id as vlogId,
             v.vloger_id as vlogerId,
---             u.face as vlogerFace,
---             u.nickname as vlogerName,
             v.title as content,
             v.url as url,
             v.cover as cover,

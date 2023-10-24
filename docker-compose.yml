@@ -1,0 +1,61 @@
+version: '3'
+services:
+
+  minio:
+    image: minio/minio
+    ports:
+      - 9000:9000
+      - 9090:9090
+    environment:
+      - MINIO_ROOT_USER=jiade
+      - MINIO_ROOT_PASSWORD=12345678
+    command: server --console-address ':9090' /data
+    volumes:
+      - ./data/minio:/data
+      - ./config/minio:/root/.minio
+
+  mysql:
+    image: mysql
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+    command: >
+      --log-error-verbosity=3
+    security_opt:
+      - seccomp:unconfined
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+    restart: always
+
+
+
+  redis:
+    image: redis
+    ports:
+      - 6379:6379
+    volumes:
+      - ./data/redis:/data
+      - ./conf/redis:/etc/redis/redis.conf
+
+  mongodb:
+    image: mongo
+    ports:
+      - 27017:27017
+    environment:
+      - TZ=Asia/Shanghai
+      - MONGO_INITDB_DATABASE=tiktok
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=123456
+    volumes:
+      - ./data/mongodb:/data/db
+
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
+      - RABBITMQ_DEFAULT_VHOST=tiktok

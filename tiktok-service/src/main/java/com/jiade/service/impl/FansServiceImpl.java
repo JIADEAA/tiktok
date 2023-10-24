@@ -133,20 +133,7 @@ public class FansServiceImpl extends BaseInfoProperties implements FansService {
                                        Integer page,
                                        Integer pageSize) {
 
-        /**
-         * <判断粉丝是否是我的朋友（互粉互关）>
-         * 普通做法：
-         * 多表关联+嵌套关联查询，这样会违反多表关联的规范，不可取，高并发下回出现性能问题
-         *
-         * 常规做法：
-         * 1. 避免过多的表关联查询，先查询我的粉丝列表，获得fansList
-         * 2. 判断粉丝关注我，并且我也关注粉丝 -> 循环fansList，获得每一个粉丝，再去数据库查询我是否关注他
-         * 3. 如果我也关注他（粉丝），说明，我俩互为朋友关系（互关互粉），则标记flag为true，否则false
-         *
-         * 高端做法：
-         * 1. 关注/取关的时候，关联关系保存在redis中，不要依赖数据库
-         * 2. 数据库查询后，直接循环查询redis，避免第二次循环查询数据库的尴尬局面
-         */
+
 
 
         Map<String, Object> map = new HashMap<>();

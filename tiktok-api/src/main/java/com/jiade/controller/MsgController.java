@@ -29,7 +29,7 @@ public class MsgController extends BaseInfoProperties {
                                 @RequestParam Integer page,
                                 @RequestParam Integer pageSize) {
 
-        // mongodb 从0分页，区别于数据库
+
         if (page == null) {
             page = COMMON_START_PAGE_ZERO;
         }

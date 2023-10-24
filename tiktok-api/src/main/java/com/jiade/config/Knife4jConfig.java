@@ -10,11 +10,7 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 
-/**
- * @author: JIADE
- * @description: Knife4jConfig
- * @date: 2023/4/5 21:30
- **/
+
 @Configuration
 @EnableSwagger2WebMvc
 public class Knife4jConfig {
@@ -26,7 +22,7 @@ public class Knife4jConfig {
                         //.title("swagger-bootstrap-ui-demo RESTful APIs")
                         .description("tiktok接口文档")
                         .termsOfServiceUrl("http://www.xx.com/")
-                        .contact(new Contact("dwy", "http://www.tiktok.com/", "779882962@qq.com"))
+                        .contact(new Contact("zk", "http://www.tiktok.com/", "779882962@qq.com"))
                         .version("1.0")
                         .build())
                 //分组名称

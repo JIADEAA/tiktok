@@ -1,0 +1,10 @@
+com\jiade\mapper\FansMapperCustom.class
+com\jiade\my\mapper\MyMapper.class
+com\jiade\mapper\VlogMapper.class
+com\jiade\mapper\VlogMapperCustom.class
+com\jiade\mapper\MyLikedVlogMapper.class
+com\jiade\mapper\CommentMapperCustom.class
+com\jiade\mapper\FansMapper.class
+com\jiade\mapper\CommentMapper.class
+com\jiade\repository\MessageRepository.class
+com\jiade\mapper\UsersMapper.class

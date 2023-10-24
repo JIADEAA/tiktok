@@ -1,0 +1,16 @@
+com\jiade\bo\VlogBO.class
+com\jiade\pojo\Comment.class
+com\jiade\vo\VlogerVO.class
+com\jiade\pojo\MyLikedVlog.class
+com\jiade\vo\CommentVO.class
+com\jiade\bo\RegistLoginBO.class
+com\jiade\vo\UsersVO.class
+com\jiade\vo\FansVO.class
+com\jiade\pojo\Users.class
+com\jiade\bo\CommentBO.class
+com\jiade\pojo\Vlog.class
+com\jiade\mo\MessageMO.class
+com\jiade\vo\IndexVlogVO.class
+com\jiade\model\Stu.class
+com\jiade\pojo\Fans.class
+com\jiade\bo\UpdatedUserBO.class

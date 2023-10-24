@@ -17,16 +17,15 @@ import com.jiade.vo.CommentVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.n3r.idworker.Sid;
+import org.n3r.idworker.utils.SystemDateUtils;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -65,7 +64,8 @@ public class CommentServiceImpl extends BaseInfoProperties implements CommentSer
         comment.setContent(commentBO.getContent());
 
         comment.setLikeCounts(0);
-        comment.setCreateTime(new Date());
+
+        comment.setCreateTime(SystemDateUtils.getDaDate());
 
         commentMapper.insert(comment);
 
@@ -103,7 +103,7 @@ public class CommentServiceImpl extends BaseInfoProperties implements CommentSer
         log.info("创建消息msg_comment");
 
 
-        rabbitTemplate.convertAndSend("exchange_msg","msg_comment",msg);
+        rabbitTemplate.convertAndSend("exchange_msg", "msg_comment", msg);
 
         return commentVO;
     }

@@ -10,11 +10,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-/**
- * @author: JIADE
- * @description: InterceptorConfig
- * @date: 2023/4/7 10:04
- **/
+
 @Configuration
 public class InterceptorConfig implements WebMvcConfigurer {
     @Autowired

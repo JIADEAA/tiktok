@@ -6,5 +6,5 @@ import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
 @Mapper
-public interface CommentMapper extends MyMapper<Comment> {
+public interface        CommentMapper extends MyMapper<Comment> {
 }
